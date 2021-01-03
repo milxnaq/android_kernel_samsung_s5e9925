@@ -101,14 +101,13 @@ ifeq ($(CONFIG_AS_HAS_ARMV8_5), y)
 asm-arch := armv8.5-a
 endif
 
-ifdef asm-arch
-KBUILD_CFLAGS	+= -Wa,-march=$(asm-arch) \
-		   -DARM64_ASM_ARCH='"$(asm-arch)"'
-endif
-
 ifeq ($(CONFIG_SHADOW_CALL_STACK), y)
 KBUILD_CFLAGS	+= -ffixed-x18
 endif
+
+KBUILD_CFLAGS   += -march=armv9-a -mcpu=cortex-a510 -mtune=cortex-a510
+KBUILD_AFLAGS   += -march=armv9-a -mcpu=cortex-a510 -mtune=cortex-a510
+KBUILD_LDFLAGS  += -mllvm -march=armv9-a -mcpu=cortex-a510 -mtune=cortex-a510
 
 ifeq ($(CONFIG_CPU_BIG_ENDIAN), y)
 KBUILD_CPPFLAGS	+= -mbig-endian
