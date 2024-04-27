@@ -2165,6 +2165,7 @@ static int max77705_fg_get_property(struct power_supply *psy,
 	struct max77705_fuelgauge_data *fuelgauge = power_supply_get_drvdata(psy);
 	enum power_supply_ext_property ext_psp = (enum power_supply_ext_property) psp;
 	u8 data[2] = { 0, 0 };
+	union power_supply_propval value;
 
 	switch ((int)psp) {
 		/* Cell voltage (VCELL, mV) */
@@ -2264,8 +2265,9 @@ static int max77705_fg_get_property(struct power_supply *psy,
 	case POWER_SUPPLY_PROP_CAPACITY_LEVEL:
 		return -ENODATA;
 	case POWER_SUPPLY_PROP_CHARGE_COUNTER:
+		psy_do_property("battery", get, POWER_SUPPLY_PROP_CHARGE_FULL, value);
 		val->intval = fuelgauge->raw_capacity *
-			(fuelgauge->battery_data->Capacity * fuelgauge->fg_resistor / 2);
+			(value.intval/1000 * fuelgauge->fg_resistor / 2);
 		break;
 	case POWER_SUPPLY_EXT_PROP_MIN ... POWER_SUPPLY_EXT_PROP_MAX:
 		switch (ext_psp) {
