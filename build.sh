@@ -350,9 +350,9 @@ BUILD_ZIP() {
     DATE="$(date +"%d-%m-%Y_%H-%M-%S")"
 
     if $KSU; then
-        NAME="${VERSION}_${MODEL}_KSU_$DATE.zip"
+        NAME="${VERSION}_${MODEL}_AOSP_KSU_$DATE.zip"
     else
-        NAME="${VERSION}_${MODEL}_$DATE.zip"
+        NAME="${VERSION}_${MODEL}_AOSP_$DATE.zip"
     fi
 
     if [[ -f "build/out/$MODEL/$NAME" ]]; then
