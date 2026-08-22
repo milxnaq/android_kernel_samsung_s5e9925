@@ -596,7 +596,7 @@ static void stm_ts_status_event(struct stm_ts_data *ts, u8 *event_buff)
 		if (ts->plat_data->support_ear_detect) {
 			if (p_event_status->status_id == 0x6A) {
 				ts->hover_event = p_event_status->status_data_1;
-				sec_input_proximity_report(ts->dev, p_event_status->status_data_1);
+				sec_input_proximity_report(ts->dev, !p_event_status->status_data_1);
 			}
 		}
 	}
