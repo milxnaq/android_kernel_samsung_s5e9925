@@ -3811,7 +3811,7 @@
 
 			fc5_r11s_panel_display_modes {
 				native-mode = <0x11>;
-				exposed-mode = <0x11 0x12 0x13 0x14>;
+				exposed-mode = <0x11 0x12 0x14>;
 				phandle = <0x2b>;
 
 				fc5_r11s_panel_display_mode_1080x2340_120hs {
@@ -3911,7 +3911,7 @@
 
 			fc3_r11s_panel_display_modes {
 				native-mode = <0x15>;
-				exposed-mode = <0x15 0x16 0x17 0x18>;
+				exposed-mode = <0x15 0x16 0x18>;
 				phandle = <0x2f>;
 
 				fc3_r11s_panel_display_mode_1080x2340_120hs {
@@ -13780,12 +13780,12 @@
 
 				fc5_r11s_panel_display_modes {
 					native-mode = <0x00>;
-					exposed-mode = <0x00 0x04 0x08 0x0c>;
+					exposed-mode = <0x00 0x04 0x08>;
 				};
 
 				fc3_r11s_panel_display_modes {
 					native-mode = <0x00>;
-					exposed-mode = <0x00 0x04 0x08 0x0c>;
+					exposed-mode = <0x00 0x04 0x08>;
 				};
 			};
 		};
