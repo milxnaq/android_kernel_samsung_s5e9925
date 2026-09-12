@@ -3742,7 +3742,9 @@ void amdgpu_device_fini(struct amdgpu_device *adev)
 	sysfs_remove_files(&adev->dev->kobj, amdgpu_dev_attributes);
 	if (IS_ENABLED(CONFIG_PERF_EVENTS))
 		amdgpu_pmu_fini(adev);
+#ifdef CONFIG_DEBUG_FS
 	sgpu_debugfs_bpmd_cleanup(adev);
+#endif
 	if (adev->mman.discovery_bin)
 		amdgpu_discovery_fini(adev);
 

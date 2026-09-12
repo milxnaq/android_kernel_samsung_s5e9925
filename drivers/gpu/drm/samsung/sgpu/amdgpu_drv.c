@@ -1364,9 +1364,11 @@ retry_init:
 		goto err_pci;
 	}
 
+#ifdef CONFIG_DEBUG_FS
 	ret = amdgpu_debugfs_init(adev);
 	if (ret)
 		DRM_ERROR("Creating debugfs files failed (%d).\n", ret);
+#endif
 
 	return 0;
 
@@ -1813,9 +1815,11 @@ sgpu_kms_probe(struct platform_device *pdev)
 	dev_set_drvdata(&pdev->dev, ddev);
 	ddev->dev_private = (void*)adev;
 
+#ifdef CONFIG_DEBUG_FS
 	ret = sgpu_dmsg_init(adev);
 	if (ret)
 		return ret;
+#endif
 
 #ifdef CONFIG_DRM_SGPU_EXYNOS
 	ret = of_property_read_u32(pdev->dev.of_node, "g3d_cmu_cal_id",
@@ -1843,9 +1847,11 @@ retry_init:
 	} else if (ret)
 		goto err_kms_uninit;
 
+#ifdef CONFIG_DEBUG_FS
 	ret = amdgpu_debugfs_init(adev);
 	if (ret)
 		DRM_ERROR("Creating debugfs files failed (%d).\n", ret);
+#endif
 
 	return 0;
 

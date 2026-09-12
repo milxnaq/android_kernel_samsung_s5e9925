@@ -31,6 +31,7 @@ enum sgpu_dmsg_level {
 	DMSG_LEVEL_MAX,
 };
 
+#ifdef CONFIG_DEBUG_FS
 #define SGPU_LOG(adev, level, func, fmt, ...)						\
 do {											\
 	if (adev && adev->sgpu_dmsg &&							\
@@ -42,6 +43,17 @@ do {											\
 		sgpu_dmsg_log(adev, __func__, func, time, index, fmt, ##__VA_ARGS__);	\
 	}										\
 } while (0)
+#else
+#define SGPU_LOG(adev, level, func, fmt, ...) \
+	do { \
+		/* HACK: Avoid -Wunused-variable */ \
+		if (0) \
+			(void)(adev); \
+			(void)(level); \
+			(void)(func); \
+			pr_info(fmt, ##__VA_ARGS__); \
+	} while (0)
+#endif
 
 void sgpu_dmsg_log(struct amdgpu_device *adev, const char *caller, int func,
 		   ktime_t time, int index, const char *fmt, ...);

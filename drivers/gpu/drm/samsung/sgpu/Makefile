@@ -57,13 +57,13 @@ sgpu-y += amdgpu_device.o amdgpu_kms.o \
 	amdgpu_dma_buf.o amdgpu_vm.o amdgpu_ib.o amdgpu_pll.o \
 	amdgpu_ucode.o amdgpu_bo_list.o amdgpu_ctx.o amdgpu_sync.o \
 	amdgpu_gtt_mgr.o amdgpu_vram_mgr.o amdgpu_virt.o amdgpu_atomfirmware.o \
-	amdgpu_vf_error.o amdgpu_sched.o amdgpu_debugfs.o amdgpu_ids.o \
+	amdgpu_vf_error.o amdgpu_sched.o amdgpu_ids.o \
 	amdgpu_gmc.o amdgpu_mmhub.o amdgpu_xgmi.o amdgpu_csa.o amdgpu_ras.o amdgpu_vm_cpu.o \
 	amdgpu_vm_sdma.o amdgpu_discovery.o amdgpu_ras_eeprom.o amdgpu_nbio.o \
 	amdgpu_umc.o smu_v11_0_i2c.o amdgpu_fru_eeprom.o amdgpu_rap.o
 
 sgpu-$(CONFIG_PERF_EVENTS) += amdgpu_pmu.o
-sgpu-$(CONFIG_DEBUG_FS) += sgpu_debugfs.o
+sgpu-$(CONFIG_DEBUG_FS) += amdgpu_debugfs.o sgpu_debugfs.o sgpu_dmsg.o
 
 # add asic specific block
 sgpu-$(CONFIG_DRM_AMDGPU_CIK)+= cik.o cik_ih.o \
@@ -262,6 +262,4 @@ endif
 # add sgpu_power_tracepoint
 sgpu-y += sgpu_power_trace_points.o
 
-# add SGPU Debug messages
-sgpu-y += sgpu_dmsg.o
 obj-$(CONFIG_DRM_SGPU)+= sgpu.o
