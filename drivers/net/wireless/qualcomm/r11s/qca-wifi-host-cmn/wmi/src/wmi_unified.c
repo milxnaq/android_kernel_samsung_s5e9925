@@ -111,6 +111,7 @@ typedef PREPACK struct {
 
 #ifdef WMI_INTERFACE_EVENT_LOGGING
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(4, 3, 0))
+#ifdef CONFIG_DEBUG_FS
 /* TODO Cleanup this backported function */
 static int wmi_bp_seq_printf(qdf_debugfs_file_t m, const char *f, ...)
 {
@@ -122,6 +123,7 @@ static int wmi_bp_seq_printf(qdf_debugfs_file_t m, const char *f, ...)
 
 	return 0;
 }
+#endif
 #else
 #define wmi_bp_seq_printf(m, fmt, ...) seq_printf((m), fmt, ##__VA_ARGS__)
 #endif
@@ -1002,6 +1004,7 @@ wmi_print_mgmt_event_log(wmi_unified_t wmi, uint32_t count,
 		return outlen;						\
 	}
 
+#ifdef CONFIG_DEBUG_FS
 GENERATE_COMMAND_DEBUG_SHOW_FUNCS(command_log, wmi_display_size,
 				  wmi_command_debug);
 GENERATE_COMMAND_DEBUG_SHOW_FUNCS(command_tx_cmp_log, wmi_display_size,
@@ -1274,6 +1277,7 @@ out:
 	wmi_log_buffer_free(wmi_handle);
 	return;
 }
+#endif
 
 /**
  * wmi_debugfs_remove() - Remove debugfs entry for wmi logging.
@@ -1309,6 +1313,7 @@ static void wmi_debugfs_remove(wmi_unified_t wmi_handle)
  */
 static QDF_STATUS wmi_debugfs_init(wmi_unified_t wmi_handle, uint32_t pdev_idx)
 {
+#ifdef CONFIG_DEBUG_FS
 	char buf[32];
 
 	snprintf(buf, sizeof(buf), "WMI_SOC%u_PDEV%u",
@@ -1325,6 +1330,9 @@ static QDF_STATUS wmi_debugfs_init(wmi_unified_t wmi_handle, uint32_t pdev_idx)
 			   wmi_handle->log_info.wmi_log_debugfs_dir);
 
 	return QDF_STATUS_SUCCESS;
+#else
+	return QDF_STATUS_SUCCESS;
+#endif
 }
 
 /**
