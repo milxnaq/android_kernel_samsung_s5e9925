@@ -105,9 +105,9 @@ ifeq ($(CONFIG_SHADOW_CALL_STACK), y)
 KBUILD_CFLAGS	+= -ffixed-x18
 endif
 
-KBUILD_CFLAGS   += -march=armv9-a -mcpu=cortex-a510 -mtune=cortex-a510
-KBUILD_AFLAGS   += -march=armv9-a -mcpu=cortex-a510 -mtune=cortex-a510
-KBUILD_LDFLAGS  += -mllvm -march=armv9-a -mcpu=cortex-a510 -mtune=cortex-a510
+KBUILD_CFLAGS   += -march=armv9-a -mcpu=cortex-a510 -mtune=cortex-a710
+KBUILD_AFLAGS   += -march=armv9-a -mcpu=cortex-a510 -mtune=cortex-a710
+KBUILD_LDFLAGS  += -mllvm -march=armv9-a -mcpu=cortex-a510 -mtune=cortex-a710
 
 ifeq ($(CONFIG_CPU_BIG_ENDIAN), y)
 KBUILD_CPPFLAGS	+= -mbig-endian
