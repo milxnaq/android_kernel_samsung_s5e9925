@@ -5676,7 +5676,9 @@ static int gfx_v10_0_fw_init(void *handle)
 			status = RREG32_SOC15(GC, 0, mmRLC_RLCS_BOOTLOAD_STATUS);
 			if (status & 0xC0000000) {
 				DRM_DEBUG("already power on : %lx\n", status);
+#ifdef CONFIG_DEBUG_FS
 				SGPU_LOG(adev, DMSG_INFO, DMSG_POWER, "already power on : %lx", status);
+#endif
 				r = 0;
 			}
 		} else
@@ -9529,8 +9531,10 @@ static void gfx_v10_0_ring_set_wptr_gfx(struct amdgpu_ring *ring)
 		WREG32_SOC15(GC, 0, mmCP_RB0_WPTR, lower_32_bits(ring->wptr));
 		WREG32_SOC15(GC, 0, mmCP_RB0_WPTR_HI, upper_32_bits(ring->wptr));
 	}
+#ifdef CONFIG_DEBUG_FS
 	SGPU_LOG(adev, DMSG_INFO, DMSG_POWER, "ring[%d] wptr:%x, %lx",
 			ring->wptr_offs, ring->wptr, RREG32_SOC15(GC, 0, mmCP_DEBUG_CNTL));
+#endif
 }
 
 static u64 gfx_v10_0_ring_get_rptr_compute(struct amdgpu_ring *ring)
@@ -9590,8 +9594,10 @@ static void gfx_v10_0_ring_set_wptr_compute(struct amdgpu_ring *ring)
 	} else {
 		BUG(); /* only DOORBELL method supported on gfx10 now */
 	}
+#ifdef CONFIG_DEBUG_FS
 	SGPU_LOG(adev, DMSG_INFO, DMSG_POWER, "ring[%d] wptr:%x, %lx",
 			ring->wptr_offs, ring->wptr, RREG32_SOC15(GC, 0, mmCP_DEBUG_CNTL));
+#endif
 }
 
 static void gfx_v10_0_ring_emit_hdp_flush(struct amdgpu_ring *ring)

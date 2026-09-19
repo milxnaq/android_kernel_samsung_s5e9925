@@ -110,7 +110,9 @@ static int sgpu_devfreq_target(struct device *dev, unsigned long *target_freq, u
 	}
 
 	trace_sgpu_devfreq_set_target(cur_freq, *target_freq);
+#ifdef CONFIG_DEBUG_FS
 	SGPU_LOG(adev, DMSG_INFO, DMSG_DVFS, "set_freq:%8lu", *target_freq);
+#endif
 
 	return 0;
 }

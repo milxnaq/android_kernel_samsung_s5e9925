@@ -263,7 +263,9 @@ static ssize_t max_freq_store(struct device *dev,
 {
 	struct devfreq *df = to_devfreq(dev);
 	struct sgpu_governor_data *data = df->data;
+#ifdef CONFIG_DEBUG_FS
 	struct amdgpu_device *adev = data->adev;
+#endif
 	unsigned long value;
 	int ret;
 
@@ -277,8 +279,10 @@ static ssize_t max_freq_store(struct device *dev,
 	if (!dev_pm_qos_request_active(&data->sys_pm_qos_max))
 		return -EINVAL;
 
+#ifdef CONFIG_DEBUG_FS
 	SGPU_LOG(adev, DMSG_INFO, DMSG_DVFS,
 		 "MAX_REQUEST sys_pm_qos=%lu", value);
+#endif
 	DRM_INFO("[sgpu] MAX_REQUEST sys_pm_qos=%lu", value);
 
 	if (sgpu_dvfs_governor_major_level_check(df, value)) {
@@ -307,7 +311,9 @@ static ssize_t min_freq_store(struct device *dev,
 {
 	struct devfreq *df = to_devfreq(dev);
 	struct sgpu_governor_data *data = df->data;
+#ifdef CONFIG_DEBUG_FS
 	struct amdgpu_device *adev = data->adev;
+#endif
 	unsigned long value;
 	int ret;
 
@@ -318,8 +324,10 @@ static ssize_t min_freq_store(struct device *dev,
 	if (!dev_pm_qos_request_active(&data->sys_pm_qos_min))
 		return -EINVAL;
 
+#ifdef CONFIG_DEBUG_FS
 	SGPU_LOG(adev, DMSG_INFO, DMSG_DVFS,
 		 "MIN_REQUEST sys_pm_qos=%lu", value);
+#endif
 	DRM_INFO("[sgpu] MIN_REQUEST sys_pm_qos=%lu", value);
 
 	if (sgpu_dvfs_governor_major_level_check(df, value)) {

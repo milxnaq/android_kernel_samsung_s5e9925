@@ -583,7 +583,9 @@ static int amdgpu_cs_parser_bos(struct amdgpu_cs_parser *p,
 		if (r)
 			return r;
 	}
+#ifdef CONFIG_DEBUG_FS
 	SGPU_LOG(adev, DMSG_INFO, DMSG_ETC, "bo_num=%d", p->bo_list->num_entries);
+#endif
 
 	/* One for TTM and one for the CS job */
 	amdgpu_bo_list_for_each_entry(e, p->bo_list)

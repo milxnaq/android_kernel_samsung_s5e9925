@@ -77,6 +77,7 @@ static void amdgpu_job_timedout(struct drm_sched_job *s_job)
 			 s_job->s_fence->finished.seqno,
 			 fence->context, fence->seqno);
 
+#ifdef CONFIG_DEBUG_FS
 		SGPU_LOG(adev, DMSG_INFO, DMSG_ETC,
 				"%s: vmid %u job_id %lld FENCE drm %lld/%lld/%lld sgpu %lld/%lld\n",
 				ring->name, job->vmid, s_job->id,
@@ -84,6 +85,7 @@ static void amdgpu_job_timedout(struct drm_sched_job *s_job)
 				s_job->s_fence->finished.context,
 				s_job->s_fence->finished.seqno,
 				fence->context, fence->seqno);
+#endif
 
 		ring->funcs->check_ring_done(ring);
 	}
@@ -111,8 +113,10 @@ static void amdgpu_job_timedout(struct drm_sched_job *s_job)
 		DRM_ERROR("ring %s timeout, but soft recovered\n",
 			  s_job->sched->name);
 
+#ifdef CONFIG_DEBUG_FS
 		SGPU_LOG(adev, DMSG_INFO, DMSG_ETC, "ring %s timeout, but soft recovered\n",
 				s_job->sched->name);
+#endif
 
 		goto out;
 	}
@@ -125,9 +129,11 @@ static void amdgpu_job_timedout(struct drm_sched_job *s_job)
 	DRM_ERROR("Process information: process %s pid %d thread %s pid %d\n",
 		  ti.process_name, ti.tgid, ti.task_name, ti.pid);
 
+#ifdef CONFIG_DEBUG_FS
 	SGPU_LOG(adev, DMSG_INFO, DMSG_ETC,
 			"Process information: process %s pid %d thread %s pid %d\n",
 			ti.process_name, ti.tgid, ti.task_name, ti.pid);
+#endif
 
 	if (amdgpu_device_should_recover_gpu(ring->adev)) {
 		amdgpu_device_gpu_recover(ring->adev, job);
@@ -422,7 +428,9 @@ static void amdgpu_job_free_cb(struct drm_sched_job *s_job)
 
 	kfree(job);
 
+#ifdef CONFIG_DEBUG_FS
 	SGPU_LOG(adev, DMSG_INFO, DMSG_ETC, "amdgpu_job_free_cb");
+#endif
 	if (adev->runpm) {
 		mutex_lock(&adev->ifpo_mutex);
 		if (atomic_read(&adev->in_ifpo) == 0 &&

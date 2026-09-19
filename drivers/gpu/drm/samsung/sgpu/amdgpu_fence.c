@@ -160,8 +160,10 @@ int amdgpu_fence_emit(struct amdgpu_ring *ring, struct dma_fence **f,
 
 	if (adev->runpm) {
 		atomic_inc(&ring->adev->in_ifpo);
+#ifdef CONFIG_DEBUG_FS
 		SGPU_LOG(ring->adev, DMSG_INFO, DMSG_ETC,
 				"amdgpu_fence_emit");
+#endif
 		pm_runtime_get_noresume(adev_to_drm(adev)->dev);
 	}
 
@@ -302,8 +304,10 @@ bool amdgpu_fence_process(struct amdgpu_ring *ring)
 			continue;
 
 		atomic_dec(&ring->adev->in_ifpo);
+#ifdef CONFIG_DEBUG_FS
 		SGPU_LOG(ring->adev, DMSG_INFO, DMSG_ETC,
 				"in_ifpo %d", atomic_read(&ring->adev->in_ifpo));
+#endif
 
 		r = dma_fence_signal(fence);
 		if (!r)

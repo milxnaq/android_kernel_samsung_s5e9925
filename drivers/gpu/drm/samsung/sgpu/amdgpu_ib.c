@@ -303,12 +303,14 @@ int amdgpu_ib_schedule(struct amdgpu_ring *ring, unsigned num_ibs,
 #ifdef CONFIG_PM_DEVFREQ
 	if (sgpu_enable_dvfs) {
 		if (job) {
+#ifdef CONFIG_DEBUG_FS
 			SGPU_LOG(adev, DMSG_INFO, DMSG_ETC,
 				 "vmid=%u, pasid=%u, drm %llu/%llu/%llu",
 				 job->vmid, job->pasid,
 				 job->base.s_fence->scheduled.context,
 				 job->base.s_fence->finished.context,
 				 job->base.s_fence->finished.seqno);
+#endif
 		}
 		job_count = ring->fence_drv.sync_seq - job_count;
 		cu_job = (ring->funcs->type == AMDGPU_RING_TYPE_COMPUTE);

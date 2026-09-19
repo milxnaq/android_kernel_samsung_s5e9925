@@ -3860,7 +3860,9 @@ int amdgpu_device_suspend(struct drm_device *dev, bool fbcon)
 	dev->switch_power_state = DRM_SWITCH_POWER_DYNAMIC_OFF;
 	trace_gpu_frequency(0, 0);
 	trace_amdgpu_device_suspend_end(0);
+#ifdef CONFIG_DEBUG_FS
 	SGPU_LOG(adev, DMSG_INFO, DMSG_POWER, "%s end", __func__);
+#endif
 	return 0;
 }
 
@@ -5174,8 +5176,10 @@ skip_hw_reset:
 		amdgpu_vf_error_put(adev, AMDGIM_ERROR_VF_GPU_RESET_FAIL, 0, r);
 	} else {
 		dev_info(adev->dev, "GPU reset(%d) succeeded!\n", atomic_read(&adev->gpu_reset_counter));
+#ifdef CONFIG_DEBUG_FS
 		SGPU_LOG(adev, DMSG_INFO, DMSG_ETC,
 				"GPU reset(%d) succeeded!\n", atomic_read(&adev->gpu_reset_counter));
+#endif
 	}
 
 	amdgpu_sws_clear_broken_queue(adev);
@@ -5384,9 +5388,13 @@ void amdgpu_cancel_all_tdr(struct amdgpu_device *adev)
 			      work_data_bits(&ring->sched.work_tdr.work)))
 			continue;
 
+#ifdef CONFIG_DEBUG_FS
 		SGPU_LOG(adev, DMSG_INFO, DMSG_MEMORY, "%s %d before", __func__, i);
+#endif
 		cancel_delayed_work(&ring->sched.work_tdr);
+#ifdef CONFIG_DEBUG_FS
 		SGPU_LOG(adev, DMSG_INFO, DMSG_MEMORY, "%s %d after", __func__, i);
+#endif
 	}
 }
 

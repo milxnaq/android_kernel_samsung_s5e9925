@@ -1098,11 +1098,15 @@ int amdgpu_vm_flush(struct amdgpu_ring *ring, struct amdgpu_job *job,
 			t_pgd = adev->gfx.rlc.funcs->get_pgd_addr(adev, job->vmid);
 
 		if (t_pgd == job->vm_pd_addr) {
+#ifdef CONFIG_DEBUG_FS
 			SGPU_LOG(adev, DMSG_INFO, DMSG_MEMORY, "vm_flush_needed=false");
+#endif
 			vm_flush_needed = false;
 		} else {
+#ifdef CONFIG_DEBUG_FS
 			SGPU_LOG(adev, DMSG_INFO, DMSG_MEMORY,
 				 "vm_flush check fail pgd mismatch");
+#endif
 		}
 	}
 

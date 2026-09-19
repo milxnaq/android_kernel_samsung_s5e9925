@@ -787,32 +787,38 @@ static void amdgpu_ctx_finished_check(struct amdgpu_ctx_entity *centity,
 			} else {
 				signed long timeout = 0, retry = 0;
 
+#ifdef CONFIG_DEBUG_FS
 				SGPU_LOG(ctx->adev, DMSG_INFO, DMSG_MEMORY,
 					 "pid=%d, centity=%08x, fence[%d]=%08x, wait_start, ret=%d",
 					 ctx->fpriv->vm.task_info.tgid,
 					 centity, idx, &s_fence->finished,
 					 dma_fence_get_status(&s_fence->finished));
+#endif
 
 				while (!timeout) {
 					retry++;
 					timeout = dma_fence_wait_timeout(&s_fence->finished, false,
 									 msecs_to_jiffies(5000));
+#ifdef CONFIG_DEBUG_FS
 					SGPU_LOG(ctx->adev, DMSG_INFO, DMSG_MEMORY,
 						 "pid=%d, centity=%08x, fence[%d]=%08x, timeout=%ld, retry=%lu",
 						 ctx->fpriv->vm.task_info.tgid,
 						 centity, idx, &s_fence->finished,
 						 timeout, retry);
+#endif
 				}
 
 				DRM_DEBUG("%s: pid=%d, centity=%08x, fence[%d]=%08x, wait_end, ret=%d",
 					  __func__, ctx->fpriv->vm.task_info.tgid,
 					  centity, idx, &s_fence->finished,
 					  dma_fence_get_status(&s_fence->finished));
+#ifdef CONFIG_DEBUG_FS
 				SGPU_LOG(ctx->adev, DMSG_INFO, DMSG_MEMORY,
 					 "pid=%d, centity=%08x, fence[%d]=%08x, wait_end, timeout=%ld, ret=%d",
 					 ctx->fpriv->vm.task_info.tgid, centity,
 					 idx, &s_fence->finished, timeout,
 					 dma_fence_get_status(&s_fence->finished));
+#endif
 			}
 		}
 	}

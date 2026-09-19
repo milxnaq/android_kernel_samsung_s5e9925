@@ -134,7 +134,9 @@ void vangogh_lite_ifpo_init(struct amdgpu_device *adev)
 
 	WREG32_SOC15(GC, 0, mmRLC_SAFE_MODE, 0x1);
 	while(RREG32_SOC15(GC, 0, mmRLC_SAFE_MODE) != 0x0);
+#ifdef CONFIG_DEBUG_FS
 	SGPU_LOG(adev, DMSG_INFO, DMSG_POWER, "IFPO INIT");
+#endif
 
 	atomic_set(&adev->ifpo_state, 0);
 }
@@ -162,9 +164,11 @@ void vangogh_lite_ifpo_power_off(struct amdgpu_device *adev)
 	perfmon_cntl = RREG32_SOC15(GC, 0, mmCP_PERFMON_CNTL);
 	cp_busy = (grbm_status >> 29) & 0x1;
 
+#ifdef CONFIG_DEBUG_FS
 	SGPU_LOG(adev, DMSG_INFO, DMSG_POWER,
 			"GRBM_STATUE=0x%08x, CP_BUSY= 0x%x / IH rptr=%u, wptr=%u, perfmon_cntl=%u",
 			grbm_status, cp_busy, ih_rptr, ih_wptr, perfmon_cntl);
+#endif
 	if ((ih_rptr != ih_wptr) || cp_busy || (perfmon_cntl & 0xff) ||
 			(atomic_read(&adev->pc_count) != 0) || (atomic_read(&adev->sqtt_count) != 0))
 		return;
@@ -173,7 +177,9 @@ void vangogh_lite_ifpo_power_off(struct amdgpu_device *adev)
 
 	if (cal_pd_control(PD_G3DCORE_IFPO, 0) != 0)
 		DRM_ERROR("%s fail to power down\n", __func__);
+#ifdef CONFIG_DEBUG_FS
 	SGPU_LOG(adev, DMSG_INFO, DMSG_POWER, "IFPO POWER OFF");
+#endif
 
 	atomic_set(&adev->ifpo_state, 0);
 }
@@ -185,8 +191,10 @@ void __vangogh_lite_ifpo_power_on(struct amdgpu_device *adev)
 
 	if (atomic_read(&adev->ifpo_state) == 1) {
 		if (cal_pd_status(PD_G3DCORE) == 0)
+#ifdef CONFIG_DEBUG_FS
 			SGPU_LOG(adev, DMSG_INFO, DMSG_POWER, "PD_G3DCORE == 0, ifpo_state %d\n",
 						atomic_read(&adev->ifpo_state));
+#endif
 		return;
 	}
 
@@ -199,11 +207,15 @@ void __vangogh_lite_ifpo_power_on(struct amdgpu_device *adev)
 		do {
 			gpu_status =  readl(addr + BG3D_PWRCTL_STATUS_OFFSET);
 		} while ((gpu_status & BG3D_PWRCTL_STATUS_GPU_READY_MASK) == 0);
+#ifdef CONFIG_DEBUG_FS
 		SGPU_LOG(adev, DMSG_INFO, DMSG_POWER, "IFPO POWER ON");
+#endif
 
 		WREG32_SOC15(GC, 0, mmRLC_SRM_CNTL, 0x2);
 	} else {
+#ifdef CONFIG_DEBUG_FS
 		SGPU_LOG(adev, DMSG_INFO, DMSG_POWER, "Pass IFPO POWER ON function");
+#endif
 	}
 
 	atomic_set(&adev->ifpo_state, 1);
@@ -226,7 +238,9 @@ void vangogh_lite_ifpo_power_on(struct amdgpu_device *adev)
 void vangogh_lite_ifpo_power_on_nocount(struct amdgpu_device *adev)
 {
 	mutex_lock(&adev->ifpo_mutex);
+#ifdef CONFIG_DEBUG_FS
 	SGPU_LOG(adev, DMSG_INFO, DMSG_POWER, "vangogh_lite_ifpo_power_on_nocount");
+#endif
 
 	if (!adev->probe_done || !adev->ifpo) {
 		mutex_unlock(&adev->ifpo_mutex);

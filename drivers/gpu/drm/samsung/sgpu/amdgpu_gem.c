@@ -78,12 +78,14 @@ int amdgpu_gem_object_create(struct amdgpu_device *adev, unsigned long size,
 
 	if (bo && bo->tbo.ttm && bo->tbo.ttm->pages &&
 	    !(bo->tbo.ttm->page_flags & TTM_PAGE_FLAG_SG)) {
+#ifdef CONFIG_DEBUG_FS
 		struct ttm_dma_tt *ttm = (void *)bo->tbo.ttm;
 		SGPU_LOG(adev, DMSG_INFO, DMSG_MEMORY,
 			 "bo=0x%08x, size=0x%08x, num_pages=%4lu, page_flags=0x%08x, "
 			 "page[0]=0x%016x, dma_address=0x%016x",
 			 bo, bo->tbo.base.size, ttm->ttm.num_pages,
 			 ttm->ttm.page_flags, ttm->ttm.pages[0], ttm->dma_address);
+#endif
 	}
 
 	*obj = &bo->tbo.base;
@@ -210,12 +212,14 @@ void amdgpu_gem_object_close(struct drm_gem_object *obj,
 
 	if (bo && bo->tbo.ttm && bo->tbo.ttm->pages &&
 	    !(bo->tbo.ttm->page_flags & TTM_PAGE_FLAG_SG)) {
+#ifdef CONFIG_DEBUG_FS
 		struct ttm_dma_tt *ttm = (void *)bo->tbo.ttm;
 		SGPU_LOG(adev, DMSG_INFO, DMSG_MEMORY,
 			 "bo=0x%08x, size=0x%08x, num_pages=%4lu, page_flags=0x%08x, "
 			 "page[0]=0x%016x, dma_address=0x%016x",
 			 bo, bo->tbo.base.size, ttm->ttm.num_pages,
 			 ttm->ttm.page_flags, ttm->ttm.pages[0], ttm->dma_address);
+#endif
 	}
 
 	amdgpu_vm_bo_rmv(adev, bo_va);

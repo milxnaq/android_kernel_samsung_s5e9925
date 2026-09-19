@@ -151,12 +151,14 @@ static int gmc_v10_0_process_interrupt(struct amdgpu_device *adev,
 			task_info.task_name, task_info.pid);
 		dev_err(adev->dev, "  in page starting at address 0x%016llx from client %d\n",
 			addr, entry->client_id);
+#ifdef CONFIG_DEBUG_FS
 		SGPU_LOG(adev, DMSG_INFO, DMSG_ETC,
 				"[%s] page fault (src_id:%u ring:%u vmid:%u pasid:%u, for process %s pid %d thread %s pid %d)\n",
 				entry->vmid_src ? "mmhub" : "gfxhub",
 				entry->src_id, entry->ring_id, entry->vmid,
 				pasid, task_info.process_name, task_info.tgid,
 				task_info.task_name, task_info.pid);
+#endif
 
 		if (!amdgpu_sriov_vf(adev))
 			hub->vmhub_funcs->print_l2_protection_fault_status(adev, status);

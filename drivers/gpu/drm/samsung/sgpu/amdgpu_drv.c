@@ -1418,7 +1418,9 @@ static int amdgpu_pmops_suspend(struct device *dev)
 	struct amdgpu_device *adev = drm_to_adev(drm_dev);
 	uint32_t i;
 
+#ifdef CONFIG_DEBUG_FS
 	SGPU_LOG(adev, DMSG_INFO, DMSG_POWER, "pmops suspend start");
+#endif
 	while (!amdgpu_device_lock_adev(adev, NULL))
 		amdgpu_cancel_all_tdr(adev);
 
@@ -1449,7 +1451,9 @@ static int amdgpu_pmops_resume(struct device *dev)
 	/* reset last_vmid for vm_flush to force tlb invalidate */
 	adev->last_vmid = 0;
 
+#ifdef CONFIG_DEBUG_FS
 	SGPU_LOG(adev, DMSG_INFO, DMSG_POWER, "pmops resume start");
+#endif
 #ifdef CONFIG_DRM_SGPU_EXYNOS
 	/* MGCG clock setting for POR */
 	vangogh_lite_gc_set_sysregs(adev);
@@ -1476,7 +1480,9 @@ static int amdgpu_pmops_resume(struct device *dev)
 
 	amdgpu_device_unlock_adev(adev);
 
+#ifdef CONFIG_DEBUG_FS
 	SGPU_LOG(adev, DMSG_INFO, DMSG_POWER, "pmops resume end");
+#endif
 	return ret;
 }
 
@@ -1526,7 +1532,9 @@ static int amdgpu_pmops_runtime_suspend(struct device *dev)
 		return -EBUSY;
 	}
 
+#ifdef CONFIG_DEBUG_FS
 	SGPU_LOG(adev, DMSG_INFO, DMSG_POWER, "runtime suspend start");
+#endif
 	/* wait for all rings to drain before suspending */
 	for (i = 0; i < AMDGPU_MAX_RINGS; i++) {
 		struct amdgpu_ring *ring = adev->rings[i];
@@ -1548,7 +1556,9 @@ static int amdgpu_pmops_runtime_suspend(struct device *dev)
 	if (ret)
 		return ret;
 
+#ifdef CONFIG_DEBUG_FS
 	SGPU_LOG(adev, DMSG_INFO, DMSG_POWER, "runtime suspend end");
+#endif
 	return 0;
 }
 
@@ -1561,7 +1571,9 @@ static int amdgpu_pmops_runtime_resume(struct device *dev)
 	if (!adev->runpm)
 		return -EINVAL;
 
+#ifdef CONFIG_DEBUG_FS
 	SGPU_LOG(adev, DMSG_INFO, DMSG_POWER, "runtime resume start");
+#endif
 
 	ret = amdgpu_device_resume(drm_dev, false);
 	drm_kms_helper_poll_enable(drm_dev);
@@ -1571,7 +1583,9 @@ static int amdgpu_pmops_runtime_resume(struct device *dev)
 	adev->last_vmid = 0;
 
 	adev->in_runpm = false;
+#ifdef CONFIG_DEBUG_FS
 	SGPU_LOG(adev, DMSG_INFO, DMSG_POWER, "runtime resume end");
+#endif
 	return 0;
 }
 

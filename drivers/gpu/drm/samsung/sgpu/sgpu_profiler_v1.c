@@ -155,8 +155,10 @@ void profiler_set_profiler_governor(int mode)
 				gpu_dvfs_set_autosuspend_delay(1000);
 				profiler_init_pmqos();
 			} else {
+#ifdef CONFIG_DEBUG_FS
 				SGPU_LOG(profiler_adev, DMSG_WARNING, DMSG_ETC,
 					"cannot change GPU governor for PROFILER, err:%d", ret);
+#endif
 			}
 		}
 	} else if ((mode == 0) && (saved_polling_interval > 0) && saved_governor[0] != 0) {
@@ -171,14 +173,18 @@ void profiler_set_profiler_governor(int mode)
 				profiler_reset_next_minlock();
 				memset(saved_governor, 0, DEVFREQ_NAME_LEN + 1);
 			} else {
+#ifdef CONFIG_DEBUG_FS
 				SGPU_LOG(profiler_adev, DMSG_WARNING, DMSG_ETC,
 					"cannot change GPU governor back to %s, err:%d", saved_governor, ret);
+#endif
 			}
 		}
 	} else {
+#ifdef CONFIG_DEBUG_FS
 		SGPU_LOG(profiler_adev, DMSG_WARNING, DMSG_ETC,
 				"cannot change GPU governor from:%s, mode=%d, saved_polling_interval=%d",
 				gpu_dvfs_get_governor(), mode, saved_polling_interval);
+#endif
 	}
 }
 
