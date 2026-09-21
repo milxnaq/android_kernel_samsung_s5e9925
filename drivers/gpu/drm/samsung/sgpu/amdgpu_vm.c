@@ -2091,7 +2091,6 @@ int amdgpu_vm_clear_freed(struct amdgpu_device *adev,
 
 		mapping = list_first_entry(&vm->freed,
 			struct amdgpu_bo_va_mapping, list);
-		list_del(&mapping->list);
 
 		if (vm->pte_support_ats &&
 		    mapping->start < AMDGPU_GMC_HOLE_START)
@@ -2100,11 +2099,13 @@ int amdgpu_vm_clear_freed(struct amdgpu_device *adev,
 		r = amdgpu_vm_bo_update_mapping(adev, vm, false, false, resv,
 						mapping->start, mapping->last,
 						init_pte_value, 0, NULL, &f);
-		amdgpu_vm_free_mapping(adev, vm, mapping, f);
 		if (r) {
 			dma_fence_put(f);
 			return r;
 		}
+
+		list_del(&mapping->list);
+		amdgpu_vm_free_mapping(adev, vm, mapping, f);
 	}
 
 	if (fence && f) {

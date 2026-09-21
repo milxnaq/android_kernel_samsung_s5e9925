@@ -69,7 +69,7 @@ static int amdgpu_cs_user_fence_chunk(struct amdgpu_cs_parser *p,
 	drm_gem_object_put(gobj);
 
 	size = amdgpu_bo_size(bo);
-	if (size != PAGE_SIZE || (data->offset + 8) > size) {
+	if (size != PAGE_SIZE || data->offset > (size - 8)) {
 		r = -EINVAL;
 		goto error_unref;
 	}

@@ -230,6 +230,13 @@ static int amdgpu_vmid_grab_idle(struct amdgpu_vm *vm,
 		unsigned j;
 
 		*idle = NULL;
+
+		/* If i is 0, dma_fence_array_create() results in WARN_ON */
+		if (!i) {
+			kfree(fences);
+			return -EINVAL;
+		}
+
 		for (j = 0; j < i; ++j)
 			dma_fence_get(fences[j]);
 
@@ -508,6 +515,8 @@ int amdgpu_vmid_alloc_reserved(struct amdgpu_device *adev,
 {
 	struct amdgpu_vmid_mgr *id_mgr;
 	struct amdgpu_vmid *idle;
+	struct list_head *pos;
+	unsigned int list_count = 0;
 	int r = 0;
 
 	id_mgr = &adev->vm_manager.id_mgr[vmhub];
@@ -515,13 +524,12 @@ int amdgpu_vmid_alloc_reserved(struct amdgpu_device *adev,
 	if (vm->reserved_vmid[vmhub])
 		goto unlock;
 
-#ifdef CONFIG_HSA_AMD
-	if (atomic_inc_return(&id_mgr->reserved_vmid_num) >
-	    AMDGPU_VM_MAX_RESERVED_VMID) {
-#else
-	if (atomic_inc_return(&id_mgr->reserved_vmid_num) >
-	    AMDGPU_VM_MAX_RESERVED_CWSR_VMID) {
-#endif
+	list_for_each(pos, &id_mgr->ids_lru)
+		list_count++;
+
+	/* Always try and keep atleast 1 VMID unreserved and available */
+	if ((atomic_inc_return(&id_mgr->reserved_vmid_num) >
+	    AMDGPU_VM_MAX_RESERVED_CWSR_VMID) || list_count <= 1) {
 		DRM_ERROR("Over limitation of reserved vmid\n");
 		atomic_dec(&id_mgr->reserved_vmid_num);
 		r = -EINVAL;
